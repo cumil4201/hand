@@ -1,0 +1,13 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "idf.extensionActivationMode": "always",
+  "clangd.path": "/home/admin/.espressif/tools/esp-clang/esp-20.1.1_20250829/esp-clang/bin/clangd",
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=**",
+    "--compile-commands-dir=/home/admin/blink/reka/build"
+  ],
+  "idf.currentSetup": "/home/admin/.espressif/v6.0.1/esp-idf",
+  "idf.port": "/dev/ttyUSB0",
+  "idf.flashType": "UART"
+}
