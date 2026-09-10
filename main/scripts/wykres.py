@@ -1,9 +1,21 @@
 import sys
+import os
 import serial
 import numpy as np
-import pyqtgraph as pg
+
+# 1. Ładujemy PySide6
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PySide6.QtCore import QTimer
+
+# 2. Inicjujemy główną aplikację ZANIM zaimportujemy pyqtgraph
+if not QApplication.instance():
+    app = QApplication(sys.argv)
+else:
+    app = QApplication.instance()
+
+# 3. Wymuszamy zgodność i ładujemy grafikę
+os.environ["PYQTGRAPH_QT_LIB"] = "PySide6"
+import pyqtgraph as pg
 
 # --- KONFIGURACJA ---
 PORT = '/dev/ttyUSB0'
@@ -23,7 +35,6 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(0, 0, 0, 0) # Brak marginesów
 
         # --- KONFIGURACJA PYQTGRAPH ---
-        # Ustawiamy białe tło dla lepszej czytelności, opcjonalnie
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
 
@@ -35,17 +46,15 @@ class MainWindow(QMainWindow):
         self.plot_widget.setTitle("Sygnał ADC w czasie rzeczywistym", size="15pt")
         self.plot_widget.showGrid(x=True, y=True, alpha=0.3)
 
-        # Inicjalizacja krzywej (gruba niebieska linia)
+        # Inicjalizacja krzywej
         pen = pg.mkPen(color=(0, 114, 189), width=2)
         self.curve = self.plot_widget.plot(pen=pen)
 
         # --- KONFIGURACJA DANYCH (NUMPY) ---
-        # Bufor Numpy jest nieporównywalnie szybszy od pythonowych list
         self.data = np.zeros(MAX_POINTS, dtype=np.int32)
 
         # --- KONFIGURACJA PORTU SZEREGOWEGO ---
         try:
-            # Krótki timeout, żeby read() nie blokowało interfejsu
             self.ser = serial.Serial(PORT, BAUD_RATE, timeout=0.01)
             self.ser.reset_input_buffer()
             print(f"Połączono z {PORT}")
@@ -54,7 +63,6 @@ class MainWindow(QMainWindow):
             sys.exit(1)
 
         # --- KONFIGURACJA TIMERA ---
-        # QTimer odpowiada za odpytywanie portu i odświeżanie okna
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_plot)
         self.timer.start(16) # Wywołanie co ~16 ms (ok. 60 klatek na sekundę)
@@ -72,7 +80,7 @@ class MainWindow(QMainWindow):
                 pass
         
         if new_data:
-            # Zabezpieczenie przed przepełnieniem (bierzemy tylko najnowsze dane)
+            # Zabezpieczenie przed przepełnieniem
             new_data = new_data[-MAX_POINTS:]
             n = len(new_data)
             
@@ -83,7 +91,7 @@ class MainWindow(QMainWindow):
             # Sprzętowa aktualizacja wykresu
             self.curve.setData(self.data)
 
-    # Bezpieczne zamykanie portu przy wyłączaniu okienka (krzyżykiem)
+    # Bezpieczne zamykanie portu przy wyłączaniu okienka
     def closeEvent(self, event):
         if hasattr(self, 'ser') and self.ser.is_open:
             self.ser.close()
@@ -91,8 +99,6 @@ class MainWindow(QMainWindow):
         event.accept()
 
 if __name__ == '__main__':
-    # Tworzenie pętli aplikacji Qt
-    app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
     sys.exit(app.exec())

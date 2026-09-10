@@ -7,7 +7,7 @@
 #include "adcCon.h"
 
 #define ADC_CHANNEL ADC_CHANNEL_6
-#define FRAME_SIZE 1024
+#define FRAME_SIZE 256
 #define SAMPLE_FREQ 20000
 
 static char* TAG = "adcContinous";
@@ -54,13 +54,23 @@ while (1)
     
 if(resultAdcRead == ESP_OK){
 
+uint32_t sum = 0;
+uint32_t amout_sampl = retur_num/SOC_ADC_DIGI_RESULT_BYTES;
+
+
 for(int i = 0 ; i < retur_num ; i += SOC_ADC_DIGI_RESULT_BYTES){
 adc_digi_output_data_t *p = (adc_digi_output_data_t*) &res[i];
+sum += p->type1.data;
 
-printf("%d\n",p->type1.data);
+//printf("%d\n",p->type1.data);
 
 
 }
+
+if(amout_sampl > 0){
+    printf("%ld \n",sum/amout_sampl);
+}
+
 
 }
 vTaskDelay(1);
