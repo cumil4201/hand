@@ -5,12 +5,14 @@
 #include "esp_log.h"
 //Header
 #include "adcCon.h"
+#include "servo.h"
 
 #define ADC_CHANNEL ADC_CHANNEL_6
 #define FRAME_SIZE 256
 #define SAMPLE_FREQ 20000
 
 static char* TAG = "adcContinous";
+static bool clinching = 0;
 
 void readADC(void *pvParameters){
 
@@ -69,6 +71,13 @@ sum += p->type1.data;
 
 if(amout_sampl > 0){
     printf("%ld \n",sum/amout_sampl);
+    // calculate the difference !!!
+
+    //if(diff > value ){ clinching = ! clinching  }
+
+    //servo_set_pos(clinching);
+
+
 }
 
 
