@@ -7,12 +7,13 @@
 #include "adcCon.h"
 #include "servo.h"
 
-#define ADC_CHANNEL ADC_CHANNEL_6
+#define ADC_CHANNEL ADC_CHANNEL_6 //gpio 34
 #define FRAME_SIZE 256
 #define SAMPLE_FREQ 20000
 
 static char* TAG = "adcContinous";
 static bool clinching = 0;
+static uint32_t avg_filtr_res = 0;
 
 void readADC(void *pvParameters){
 
@@ -70,14 +71,15 @@ sum += p->type1.data;
 }
 
 if(amout_sampl > 0){
-    printf("%ld \n",sum/amout_sampl);
+    avg_filtr_res = sum/amout_sampl;
+    printf("%ld \n",avg_filtr_res);
     // calculate the difference !!!
 
     //if(diff > value ){ clinching = ! clinching  }
 
     //servo_set_pos(clinching);
 
-
+    servo_set_pos(avg_filtr_res);
 }
 
 

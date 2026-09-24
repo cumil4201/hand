@@ -22,15 +22,17 @@ void servo_init()
             .hpoint = 0
         };
         ledc_channel_config(&channel_config);
+        ledc_fade_func_install(1);
 }
 
 
-void servo_set_pos(bool clinching){
-uint8_t min_pwm = 200;
-uint8_t max_pwm = 1000;
-uint8_t duty = 0;
+void servo_set_pos(uint32_t adc_sample){
+uint16_t min_pwm = 200;
+uint16_t max_pwm = 1000;
+uint16_t duty = 0;
 
-if(clinching){
+if(adc_sample >= 100 ) //change to 100 after new emg [*]
+{
     duty = max_pwm;
 }
 else{
