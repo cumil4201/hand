@@ -25,6 +25,12 @@ void servo_init()
         };
         ledc_channel_config(&channel_config);
         ledc_fade_func_install(1);
+        
+        for(int i = 250;i<=980;i+=5){
+                ledc_set_duty_and_update(LEDC_LOW_SPEED_MODE,LEDC_CHANNEL_0,i,0);
+        }
+
+
 }
 
 
