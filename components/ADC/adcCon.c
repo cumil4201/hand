@@ -72,7 +72,7 @@ sum += p->type1.data;
 
 if(amout_sampl > 0){
     avg_filtr_res = sum/amout_sampl;
-    printf("%ld \n",avg_filtr_res);
+    //printf("%ld \n",avg_filtr_res);
     // calculate the difference !!!
 
     //if(diff > value ){ clinching = ! clinching  }

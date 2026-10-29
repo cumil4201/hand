@@ -1,5 +1,7 @@
 #include "servo.h"
 #include "driver/ledc.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #define LEDC_GPIO 2 
 static bool is_clenched = 0;
 static int present_state = -1;
@@ -26,9 +28,7 @@ void servo_init()
         ledc_channel_config(&channel_config);
         ledc_fade_func_install(1);
         
-        for(int i = 250;i<=980;i+=5){
-                ledc_set_duty_and_update(LEDC_LOW_SPEED_MODE,LEDC_CHANNEL_0,i,0);
-        }
+       
 
 
 }

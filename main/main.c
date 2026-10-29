@@ -13,13 +13,16 @@
 
 void app_main(void)
 {
-//gpio_install_isr_service(0);
-//servo_init();
-//xTaskCreate(readADC,"readADC",4096,NULL,5,NULL);
+gpio_install_isr_service(0);
+servo_init();
 imu_init();
-while(1){
-readIMU();
-vTaskDelay(100 / portTICK_PERIOD_MS);
+xTaskCreate(readADC,"readADC",4096,NULL,5,NULL);
+while (1)
+{
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    
 }
+
+
 
 }
